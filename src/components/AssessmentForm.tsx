@@ -490,15 +490,13 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
               Atrás
             </motion.button>
 
-            <a
-              href={trainerizeLinks[recommendation?.tier || 'Guided']}
-              target="_blank"
-              rel="noopener noreferrer"
+            <motion.button
+              onClick={() => window.open(trainerizeLinks[recommendation.tier] || trainerizeLinks['Guided'], '_blank')}
               className="flex-1 bg-isa-canary text-isa-space py-4 px-6 font-black uppercase tracking-tight rounded-sm flex items-center justify-center gap-2 hover:bg-isa-canary/90 transition-colors"
             >
               <span>Ir a Trainerize</span>
               <ArrowRight size={18} />
-            </a>
+            </motion.button>
           </div>
         )}
       </div>

@@ -116,6 +116,9 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
           recommendedTier: rec.tier,
         }),
       }).catch(() => {});
+
+      // Advance to recommendation screen
+      setStep(step + 1);
     } finally {
       setIsSubmitting(false);
     }

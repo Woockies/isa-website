@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, Check, AlertCircle, Loader } from 'lucide-react';
 
@@ -45,6 +45,19 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const totalSteps = 6;
+
+  // Load saved form data from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('assessmentData');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setFormData(prev => ({ ...prev, ...parsed }));
+      } catch (e) {
+        console.error('Failed to load saved data:', e);
+      }
+    }
+  }, []);
 
   const handleInputChange = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -107,15 +120,33 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
       const rec = generateRecommendation();
       setRecommendation(rec);
 
-      // Save to backend
-      await fetch('/api/assessments', {
+      // Save form data to localStorage for auto-fill
+      localStorage.setItem('assessmentData', JSON.stringify(formData));
+
+      // Send to backend (Firebase/fitness-brain-saas)
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+
+      await fetch(`${backendUrl}/api/assessments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          recommendedTier: rec.tier,
+          full_name: formData.fullName,
+          email: formData.email,
+          age: parseInt(formData.age) || 0,
+          training_frequency: parseInt(formData.trainingFrequency) || 0,
+          main_barrier: formData.mainBarrier,
+          previous_attempts: formData.previousAttempts,
+          goal: formData.goal,
+          timeframe: formData.timeframe,
+          medical_flags: formData.medicalFlags,
+          injuries: formData.injuries,
+          recommended_tier: rec.tier,
+          tier_reasoning: rec.realisticAssessment,
+          top_priorities: rec.topPriorities,
+          expected_outcome: rec.expectedOutcome,
+          warning_sign: rec.warningSign,
         }),
-      }).catch(() => {});
+      }).catch(err => console.error('Backend error:', err));
 
       // Advance to recommendation screen
       setStep(step + 1);

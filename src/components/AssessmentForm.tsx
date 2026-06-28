@@ -416,6 +416,28 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
             </motion.button>
           </div>
         )}
+
+        {/* Final CTA */}
+        {step === totalSteps && recommendation && (
+          <div className="flex gap-4 mt-12">
+            <motion.button
+              onClick={() => setStep(step - 1)}
+              className="flex-1 py-4 px-6 font-black uppercase tracking-tight rounded-sm border border-isa-alice/50 hover:border-isa-canary"
+            >
+              Atrás
+            </motion.button>
+
+            <a
+              href="https://www.trainerize.me"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-isa-canary text-isa-space py-4 px-6 font-black uppercase tracking-tight rounded-sm flex items-center justify-center gap-2 hover:bg-isa-canary/90 transition-colors"
+            >
+              <span>Ir a Trainerize</span>
+              <ArrowRight size={18} />
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

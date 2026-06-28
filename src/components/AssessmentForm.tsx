@@ -46,6 +46,11 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const totalSteps = 6;
 
+  const trainerizeLinks: Record<string, string> = {
+    'Guided': 'https://www.trainerize.me/profile/andresesotomayor/?planGUID=26b17758f54840069aedcc4227d3539d',
+    'Intensive': 'https://www.trainerize.me/profile/andresesotomayor/?planGUID=539df74077854908b8e500623626f879',
+  };
+
   // Load ONLY non-sensitive form data from localStorage on mount
   // NEVER load email/name to prevent privacy leaks on shared devices
   useEffect(() => {
@@ -486,7 +491,7 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
             </motion.button>
 
             <a
-              href="https://www.trainerize.me"
+              href={trainerizeLinks[recommendation?.tier || 'Guided']}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 bg-isa-canary text-isa-space py-4 px-6 font-black uppercase tracking-tight rounded-sm flex items-center justify-center gap-2 hover:bg-isa-canary/90 transition-colors"

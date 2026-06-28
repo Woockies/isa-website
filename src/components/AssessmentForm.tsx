@@ -170,21 +170,27 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
             <div className="space-y-4 pt-6">
               <input
                 type="text"
+                name="fullName"
                 placeholder="Tu nombre"
+                autoComplete="name"
                 value={formData.fullName}
                 onChange={(e) => handleInputChange('fullName', e.target.value)}
                 className="w-full bg-isa-space/80 border border-isa-alice/50 px-6 py-4 rounded-sm focus:border-isa-canary outline-none placeholder:opacity-70 font-medium"
               />
               <input
                 type="email"
+                name="email"
                 placeholder="Tu email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full bg-isa-space/80 border border-isa-alice/50 px-6 py-4 rounded-sm focus:border-isa-canary outline-none placeholder:opacity-70 font-medium"
               />
               <input
                 type="number"
+                name="age"
                 placeholder="Tu edad"
+                autoComplete="bday-year"
                 value={formData.age}
                 onChange={(e) => handleInputChange('age', e.target.value)}
                 className="w-full bg-isa-space/80 border border-isa-alice/50 px-6 py-4 rounded-sm focus:border-isa-canary outline-none placeholder:opacity-70 font-medium"

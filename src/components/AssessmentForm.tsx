@@ -46,13 +46,24 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const totalSteps = 6;
 
-  // Load saved form data from localStorage on mount
+  // Load ONLY non-sensitive form data from localStorage on mount
+  // NEVER load email/name to prevent privacy leaks on shared devices
   useEffect(() => {
     const savedData = localStorage.getItem('assessmentData');
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
-        setFormData(prev => ({ ...prev, ...parsed }));
+        // Only restore non-personal questions, NOT email/name
+        setFormData(prev => ({
+          ...prev,
+          trainingFrequency: parsed.trainingFrequency || '',
+          mainBarrier: parsed.mainBarrier || '',
+          previousAttempts: parsed.previousAttempts || '',
+          goal: parsed.goal || '',
+          timeframe: parsed.timeframe || '',
+          medicalFlags: parsed.medicalFlags || false,
+          injuries: parsed.injuries || '',
+        }));
       } catch (e) {
         console.error('Failed to load saved data:', e);
       }
@@ -120,8 +131,18 @@ export default function AssessmentForm({ onBack }: { onBack?: () => void }) {
       const rec = generateRecommendation();
       setRecommendation(rec);
 
-      // Save form data to localStorage for auto-fill
-      localStorage.setItem('assessmentData', JSON.stringify(formData));
+      // Save ONLY non-sensitive data to localStorage
+      // NEVER save email or name (privacy leak on shared devices)
+      const nonSensitiveData = {
+        trainingFrequency: formData.trainingFrequency,
+        mainBarrier: formData.mainBarrier,
+        previousAttempts: formData.previousAttempts,
+        goal: formData.goal,
+        timeframe: formData.timeframe,
+        medicalFlags: formData.medicalFlags,
+        injuries: formData.injuries,
+      };
+      localStorage.setItem('assessmentData', JSON.stringify(nonSensitiveData));
 
       // Send to backend (Firebase/fitness-brain-saas)
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
